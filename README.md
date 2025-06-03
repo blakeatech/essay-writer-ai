@@ -9,24 +9,29 @@ EssayGenius is a full-stack web application that helps students create high-qual
 ## Architecture
 
 ```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Frontend      │    │    Backend      │    │   External      │
-│   (Next.js)     │    │   (FastAPI)     │    │   Services      │
-│                 │    │                 │    │                 │
-│ ┌─────────────┐ │    │ ┌─────────────┐ │    │ ┌─────────────┐ │
-│ │ Essay Form  │ │    │ │ Essay API   │ │    │ │ OpenAI GPT  │ │
-│ │ Dashboard   │ │◄──►│ │ Auth API    │ │◄──►│ │ Supabase    │ │
-│ │ Auth Pages  │ │    │ │ Stripe API  │ │    │ │ Stripe      │ │
-│ └─────────────┘ │    │ └─────────────┘ │    │ └─────────────┘ │
-│                 │    │                 │    │                 │
-│ ┌─────────────┐ │    │ ┌─────────────┐ │    │                 │
-│ │ Supabase    │ │    │ │ Services    │ │    │                 │
-│ │ Auth Client │ │    │ │ - Outline   │ │    │                 │
-│ └─────────────┘ │    │ │ - Sources   │ │    │                 │
-│                 │    │ │ - Draft     │ │    │                 │
-└─────────────────┘    │ │ - Document  │ │    │                 │
-                       │ └─────────────┘ │    │                 │
-                       └─────────────────┘    └─────────────────┘
+┌─────────────────┐    ┌─────────────────────────────────┐    ┌─────────────────┐
+│   Frontend      │    │           Backend                │    │   External      │
+│   (Next.js)     │    │          (FastAPI)               │    │   Services      │
+│                 │    │                                   │    │                 │
+│ ┌─────────────┐ │    │ ┌─────────────┐  ┌─────────────┐ │    │ ┌─────────────┐ │
+│ │ Essay Form  │ │    │ │ Essay API   │  │ Agentic     │ │    │ │ OpenAI GPT  │ │
+│ │ Dashboard   │ │◄──►│ │ Auth API    │◄►│ Pipeline    │ │◄──►│ │ Supabase    │ │
+│ │ Auth Pages  │ │    │ │ Stripe API  │  │             │ │    │ │ Stripe      │ │
+│ └─────────────┘ │    │ └─────────────┘  └─────────────┘ │    │ └─────────────┘ │
+│                 │    │                   ┌─────────────┐ │    │                 │
+│ ┌─────────────┐ │    │ ┌─────────────┐  │ Agents      │ │    │                 │
+│ │ Supabase    │ │    │ │ Services    │  │ - Outline   │ │    │                 │
+│ │ Auth Client │ │    │ │ - Outline   │◄►│ - Source    │ │    │                 │
+│ └─────────────┘ │    │ │ - Sources   │  │ - Draft     │ │    │                 │
+│                 │    │ │ - Draft     │  │ - Citation  │ │    │                 │
+└─────────────────┘    │ │ - Document  │  └─────────────┘ │    │                 │
+                       │ └─────────────┘  ┌─────────────┐ │    │                 │
+                       │                   │ FAISS       │ │    │                 │
+                       │ ┌─────────────┐  │ Vector DB   │ │    │                 │
+                       │ │ Evaluation  │◄►│ (Source     │ │    │                 │
+                       │ │ Utilities   │  │ Embeddings) │ │    │                 │
+                       │ └─────────────┘  └─────────────┘ │    │                 │
+                       └───────────────────────────────────┘    └─────────────────┘
 ```
 
 ## System Flow
