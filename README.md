@@ -75,6 +75,62 @@ Citation    Section      Embedding     Content     Bibliography    Citation
 - **Source Embedding Memory**: FAISS-powered embedding storage to prevent duplicate citations
 - **Output Validation**: Automatic evaluation of essay structure and citation quality
 
+## Prompt Engineering
+
+EssayGenius uses structured prompt templates to ensure consistent, high-quality essay generation. The prompt templates are defined in [`backend/app/services/prompts.py`](backend/app/services/prompts.py) and include:
+
+### Outline Generation
+```python
+OUTLINE_PROMPT = """Generate a {paragraph_count}-paragraph outline on {topic} in {citation_style} format.
+
+The outline should include:
+1. Introduction with thesis statement
+2. {body_paragraph_count} body paragraphs covering key points
+3. Conclusion summarizing main arguments
+
+Format the outline with Roman numerals for main sections and capital letters for subsections.
+"{additional_instructions}"""
+```
+
+### Source Retrieval
+```python
+SOURCE_RETRIEVAL_PROMPT = """Find {source_count} relevant academic sources for an essay on {topic}.
+
+For each source, provide:
+1. Title
+2. Author(s)
+3. Publication year
+4. Publication venue (journal, conference, etc.)
+5. Brief summary (2-3 sentences)
+6. Relevance to the topic (1-2 sentences)
+
+Prefer recent sources (within the last {recency_years} years) and ensure diversity of perspectives.
+"{additional_instructions}"""
+```
+
+### Draft Generation
+```python
+DRAFT_GENERATION_PROMPT = """Write a {word_count}-word essay based on the following outline and sources:
+
+OUTLINE:
+{outline}
+
+SOURCES:
+{sources}
+
+Follow these guidelines:
+1. Use {citation_style} citation format
+2. Include in-text citations from the provided sources
+3. Maintain academic tone and language
+4. Follow the outline structure closely
+5. Begin with an introduction that includes a thesis statement
+6. End with a conclusion that summarizes the main points
+
+{additional_instructions}"""
+```
+
+The prompts are formatted using the `format_prompt()` utility function, which replaces placeholders with actual values.
+
 ## Technology Stack
 
 ### Frontend
