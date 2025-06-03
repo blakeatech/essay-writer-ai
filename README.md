@@ -4,7 +4,7 @@ AI-powered essay writing assistant that generates academic papers with proper ci
 
 ## Overview
 
-EssayGenius is a full-stack web application that helps students create high-quality academic essays. The platform uses advanced AI to generate outlines, find relevant sources, and produce well-structured papers with proper citations in multiple formats (APA, MLA, Chicago).
+EssayGenius is a full-stack web application that helps students create high-quality academic essays. The platform uses advanced AI to generate outlines, find relevant sources, and produce well-structured papers with proper citations in multiple formats (APA, MLA, Chicago). The system employs an agentic essay pipeline with specialized agents for outline generation, source retrieval, draft creation, and citation formatting.
 
 ## Architecture
 
@@ -43,6 +43,18 @@ Database         ↓             ↓               ↓               ↓
 Storage     Background Job  File Generation  Quality Check  User Dashboard
 ```
 
+### Agentic Essay Pipeline
+
+```
+User Input → Outline Agent → Source Agent → Draft Agent → Citation Agent → Validation
+    ↓             ↓              ↓             ↓              ↓              ↓
+ Topic &     Generate      Retrieve       Create       Format        Structure
+Requirements  Outline      Sources        Draft      Citations      Validation
+    ↓             ↓              ↓             ↓              ↓              ↓
+Citation    Section      Embedding     Content     Bibliography    Citation
+  Style     Structure     Storage     Generation    Formatting     Validation
+```
+
 ## Features
 
 - **AI-Powered Essay Generation**: Creates complete academic papers based on topics and requirements
@@ -53,6 +65,10 @@ Storage     Background Job  File Generation  Quality Check  User Dashboard
 - **User Authentication**: Secure login and registration with Supabase
 - **Credit System**: Pay-per-use model with Stripe integration
 - **Real-time Progress**: Live updates during essay generation process
+- **Agentic Essay Pipeline**: Coordinated agents for outline, sources, drafting, and citations
+- **Structured Prompts**: Templated prompts for consistent, high-quality generation
+- **Source Embedding Memory**: FAISS-powered embedding storage to prevent duplicate citations
+- **Output Validation**: Automatic evaluation of essay structure and citation quality
 
 ## Technology Stack
 
@@ -74,6 +90,8 @@ Storage     Background Job  File Generation  Quality Check  User Dashboard
 - **Payment Processing**: Stripe
 - **Document Generation**: python-docx
 - **Rate Limiting**: SlowAPI
+- **Vector Database**: FAISS for source embeddings
+- **Testing Framework**: Pytest
 
 ### Infrastructure
 - **Deployment**: Fly.io
@@ -136,23 +154,31 @@ npm run dev
 
 ```
 essaygenius/
-├── essaygenius_frontend/     # Next.js frontend application
-│   ├── app/                  # App router pages and layouts
-│   │   ├── api/              # API route handlers
-│   │   ├── components/       # Reusable UI components
-│   │   ├── lib/              # Utility functions and configurations
-│   │   ├── hooks/            # Custom React hooks
-│   │   └── services/         # API service functions
-│   └── README.md             # This file
-├── essaygenius_backend/      # FastAPI backend application
-│   ├── app/                  # Main application code
-│   │   ├── api/              # API route handlers
-│   │   ├── services/         # Business logic services
-│   │   ├── models/           # Pydantic models
-│   │   ├── schemas/          # Data schemas
-│   │   └── utils/            # Utility functions
-│   └── requirements.txt      # Python dependencies
-└── README.md                 # This file
+├── frontend/                # Next.js frontend application
+│   ├── app/                 # App router pages and layouts
+│   │   ├── api/             # API route handlers
+│   │   ├── components/      # Reusable UI components
+│   │   ├── lib/             # Utility functions and configurations
+│   │   ├── hooks/           # Custom React hooks
+│   │   └── services/        # API service functions
+│   └── README.md            # Frontend documentation
+├── backend/                 # FastAPI backend application
+│   ├── app/                 # Main application code
+│   │   ├── api/             # API route handlers
+│   │   ├── services/        # Business logic services
+│   │   │   ├── prompts.py   # Structured prompt templates
+│   │   │   └── source_retrieval.py # FAISS embedding service
+│   │   ├── agents.py        # Agentic essay pipeline
+│   │   ├── models/          # Pydantic models
+│   │   ├── schemas/         # Data schemas
+│   │   └── utils/           # Utility functions
+│   │       └── evaluation.py # Essay structure validation
+│   ├── tests/               # Unit tests
+│   │   ├── test_outline.py  # Tests for outline generation
+│   │   ├── test_sources.py  # Tests for source retrieval
+│   │   └── test_evaluation.py # Tests for essay validation
+│   └── requirements.txt     # Python dependencies
+└── README.md                # This file
 ```
 
 ## Deployment
