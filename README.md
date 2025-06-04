@@ -14,79 +14,87 @@ Democratizes access to high-quality academic writing assistance while maintainin
 
 The system uses a microservices architecture with separate frontend/backend services and an agentic pipeline for essay generation.
 
+### Architecture Overview
+
 ```mermaid
-graph TB
-    subgraph "Frontend Layer"
-        A[Next.js App] --> B[Essay Form]
-        A --> C[Dashboard]
-        A --> D[Auth Pages]
-        A --> E[Supabase Auth Client]
+graph LR
+    subgraph Frontend["🖥️ Frontend"]
+        A[Next.js App]
+        B[Essay Form]
+        C[User Dashboard]
     end
     
-    subgraph "Backend Layer"
-        F[FastAPI Server] --> G[Essay API]
-        F --> H[Auth API]
-        F --> I[Stripe API]
-        F --> J[Agentic Pipeline]
-        F --> K[Services Layer]
-        K --> L[Outline Service]
-        K --> M[Source Service]
-        K --> N[Draft Service]
-        K --> O[Document Service]
-        F --> P[Evaluation Utils]
+    subgraph Backend["⚙️ Backend API"]
+        D[FastAPI Server]
+        E[Authentication]
+        F[Payment Processing]
     end
     
-    subgraph "AI Agents"
-        J --> Q[Outline Agent]
-        J --> R[Source Agent]
-        J --> S[Draft Agent]
-        J --> T[Citation Agent]
+    subgraph AI["🤖 AI Pipeline"]
+        G[Outline Agent]
+        H[Source Agent]
+        I[Draft Agent]
+        J[Citation Agent]
     end
     
-    subgraph "Data Layer"
-        U[FAISS Vector DB]
-        V[Supabase DB]
+    subgraph Data["💾 Data Layer"]
+        K[PostgreSQL]
+        L[FAISS Vectors]
+        M[File Storage]
     end
     
-    subgraph "External Services"
-        W[OpenAI GPT-4]
-        X[Supabase Storage]
-        Y[Stripe Payments]
-    end
-    
-    A --> F
-    J --> W
-    R --> U
-    F --> V
-    F --> X
-    I --> Y
+    Frontend --> Backend
+    Backend --> AI
+    AI --> Data
+    Backend --> Data
 ```
 
-### Processing Flow
+### Essay Generation Flow
+
+```mermaid
+flowchart TD
+    A[📝 User Submits Topic] --> B[🔐 Authenticate & Validate]
+    B --> C[💳 Check Credits]
+    C --> D[📋 Generate Outline]
+    D --> E[📚 Find Sources]
+    E --> F[✍️ Write Draft]
+    F --> G[📖 Format Citations]
+    G --> H[📄 Create Document]
+    H --> I[✅ Deliver to User]
+    
+    style A fill:#e1f5fe
+    style I fill:#e8f5e8
+    style D fill:#fff3e0
+    style E fill:#fff3e0
+    style F fill:#fff3e0
+    style G fill:#fff3e0
+```
+
+### Agent Interaction
 
 ```mermaid
 sequenceDiagram
-    participant U as User
-    participant F as Frontend
-    participant B as Backend
-    participant A as AI Agents
-    participant D as Database
-    participant S as Storage
+    participant User
+    participant API
+    participant Outline as 📋 Outline Agent
+    participant Source as 📚 Source Agent  
+    participant Draft as ✍️ Draft Agent
+    participant Citation as 📖 Citation Agent
     
-    U->>F: Submit essay request
-    F->>B: Validate & authenticate
-    B->>D: Check credits & rate limits
-    B->>A: Initialize agent pipeline
+    User->>API: Submit essay request
+    API->>Outline: Generate structure
+    Outline-->>API: Return outline
     
-    A->>A: Outline Agent generates structure
-    A->>A: Source Agent retrieves references
-    A->>A: Draft Agent writes content
-    A->>A: Citation Agent formats bibliography
+    API->>Source: Find relevant sources
+    Source-->>API: Return source list
     
-    A->>B: Return generated essay
-    B->>S: Store document & metadata
-    B->>F: Return download link
-    F->>U: Display completed essay
+    API->>Draft: Write essay content
+    Draft-->>API: Return draft text
+    
+    API->>Citation: Format bibliography
+    Citation-->>API: Return final essay
+    
+    API->>User: Deliver completed essay
 ```
 
 ### Design Q&A
