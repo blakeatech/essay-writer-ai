@@ -17,7 +17,7 @@ The system uses a microservices architecture with separate frontend/backend serv
 ### Architecture Overview
 
 ```mermaid
-graph LR
+graph TD
     subgraph Frontend["🖥️ Frontend"]
         A[Next.js App]
         B[Essay Form]
@@ -255,31 +255,31 @@ cd essaygenius
 2. Set up environment variables:
 ```bash
 # Frontend (.env.local)
-cp essaygenius_frontend/.env.example essaygenius_frontend/.env.local
+cp frontend/.env.example frontend/.env.local
 
 # Backend (.env)
-cp essaygenius_backend/.env.example essaygenius_backend/.env
+cp backend/.env.example backend/.env
 ```
 
 3. Install dependencies:
 ```bash
 # Frontend
-cd essaygenius_frontend
+cd frontend
 npm install
 
 # Backend
-cd ../essaygenius_backend
+cd ../backend
 pip install -r requirements.txt
 ```
 
 4. Start development servers:
 ```bash
 # Backend (Terminal 1)
-cd essaygenius_backend
+cd backend
 uvicorn app.main:app --reload --port 8000
 
 # Frontend (Terminal 2)
-cd essaygenius_frontend
+cd frontend
 npm run dev
 ```
 
@@ -296,6 +296,7 @@ essaygenius/
 │   │   ├── lib/             # Utility functions and configurations
 │   │   ├── hooks/           # Custom React hooks
 │   │   └── services/        # API service functions
+│   │       └── evaluation.py # Essay structure validation
 │   └── README.md            # Frontend documentation
 ├── backend/                 # FastAPI backend application
 │   ├── app/                 # Main application code
@@ -322,13 +323,13 @@ Both frontend and backend are configured for deployment on Fly.io with Docker co
 
 ### Frontend Deployment
 ```bash
-cd essaygenius_frontend
+cd frontend
 fly deploy
 ```
 
 ### Backend Deployment
 ```bash
-cd essaygenius_backend
+cd backend
 fly deploy
 ```
 
